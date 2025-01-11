@@ -10,7 +10,7 @@ const app = express();
 const corsOptions = {
     origin: [
         "http://localhost:5173", // Local frontend for development
-        "https://mattmiss.github.io/watchlist-duo", // GitHub Pages for production
+        "https://mattmiss.github.io", // GitHub Pages for production
     ],
     methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"], // Allowed HTTP methods
     allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
