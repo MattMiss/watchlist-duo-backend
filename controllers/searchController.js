@@ -17,7 +17,12 @@ const searchMedia = async (req, res) => {
     } = req.query;
   
     if (!query) {
-      return res.status(400).json({ error: "Query parameter is required." });
+        return res.status(400).json({ error: "Query parameter is required." });
+    }
+
+    const pageNumber = parseInt(page, 10);
+    if (isNaN(pageNumber) || pageNumber < 1 || pageNumber > 1000) {
+        return res.status(400).json({ error: "Invalid page parameter. Must be an integer between 1 and 1000." });
     }
   
     // Map search types to their corresponding TMDB API endpoints
@@ -29,19 +34,19 @@ const searchMedia = async (req, res) => {
     };
   
     try {
-      // Make the API request to TMDB
-      const response = await axios.get(apiUrlMap[searchType], {
-            params: {
-                api_key: process.env.TMDB_API_KEY,
-                query,
-                include_adult: includeAdult,
-                language,
-                primary_release_year: primaryReleaseYear || undefined,
-                year: year || undefined,
-                region: region || undefined,
-                page,
-            },
-      });
+        // Make the API request to TMDB
+        const response = await axios.get(apiUrlMap[searchType], {
+                params: {
+                    api_key: process.env.TMDB_API_KEY,
+                    query,
+                    include_adult: includeAdult,
+                    language,
+                    page: pageNumber,
+                    primary_release_year: primaryReleaseYear || undefined,
+                    year: year || undefined,
+                    region: region || undefined,
+                },
+        });
   
         // Optionally filter incomplete results
         let results = response.data.results;
