@@ -8,9 +8,12 @@ const app = express();
 
 // CORS Middleware
 const corsOptions = {
-  origin: "http://localhost:5173", // Your frontend origin
-  methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"], // Allowed HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
+    origin: [
+        "http://localhost:5173", // Local frontend for development
+        "https://mattmiss.github.io/watchlist-duo", // GitHub Pages for production
+    ],
+    methods: ["GET", "POST", "DELETE", "PUT", "OPTIONS"], // Allowed HTTP methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Allowed headers
 };
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // Handle preflight requests
