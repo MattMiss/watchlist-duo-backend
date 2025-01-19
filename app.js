@@ -3,6 +3,7 @@ import cors from "cors";
 import myListRoutes from "./routes/myListRoutes.js";
 import duoPartnerRoutes from "./routes/duoPartnerListRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
+import discoverRoutes from "./routes/discoverRoutes.js";
 
 const app = express();
 
@@ -25,5 +26,6 @@ app.use(express.json());
 app.use("/api", myListRoutes);
 app.use("/api", duoPartnerRoutes);
 app.use("/api", searchRoutes);
+app.use("/api", discoverRoutes);
 
 export default app;
