@@ -9,38 +9,51 @@ const getMyList = async (req, res) => {
   
     try {
         const userId = req.user.uid;
-  
-        // Fetch movies and TV shows for the user
+
+        // Fetch Movies and TV Shows together
         const fetchMovies = async () => {
-            const moviesRef = db.collection("users").doc(userId).collection("movies");
+            const moviesRef = db.collection("users").doc(userId).collection("movies").orderBy("name");
             const moviesSnapshot = await moviesRef.get();
             return moviesSnapshot.docs.map((doc) => ({
-            id: Number(doc.id),
-            title: doc.data().name || "Unknown",
-            release_date: doc.data().year ? `${doc.data().year}-01-01` : undefined,
-            vote_average: doc.data().rating || 0,
-            poster_path: doc.data().poster_path || null,
-            media_type: "movie",
-            owner: "self",
+                id: Number(doc.id),
+                title: doc.data().name || "Unknown",
+                release_date: doc.data().year ? `${doc.data().year}-01-01` : undefined,
+                vote_average: doc.data().rating || 0,
+                poster_path: doc.data().poster_path || null,
+                media_type: "movie",
+                owner: "self",
+                sortName: doc.data().name?.toLowerCase() || "zzz", // Uniform sorting key
             }));
         };
-  
+    
         const fetchTVShows = async () => {
-            const tvRef = db.collection("users").doc(userId).collection("tv");
+            const tvRef = db.collection("users").doc(userId).collection("tv").orderBy("name");
             const tvSnapshot = await tvRef.get();
             return tvSnapshot.docs.map((doc) => ({
-            id: Number(doc.id),
-            name: doc.data().name || "Unknown",
-            first_air_date: doc.data().year ? `${doc.data().year}-01-01` : undefined,
-            vote_average: doc.data().rating || 0,
-            poster_path: doc.data().poster_path || null,
-            media_type: "tv",
-            owner: "self",
+                id: Number(doc.id),
+                name: doc.data().name || "Unknown",
+                first_air_date: doc.data().year ? `${doc.data().year}-01-01` : undefined,
+                vote_average: doc.data().rating || 0,
+                poster_path: doc.data().poster_path || null,
+                media_type: "tv",
+                owner: "self",
+                sortName: doc.data().name?.toLowerCase() || "zzz", // Uniform sorting key
             }));
         };
-  
+    
+        // Fetch both lists concurrently
         const [movies, tvShows] = await Promise.all([fetchMovies(), fetchTVShows()]);
-        res.json([...movies, ...tvShows]);
+    
+        // Combine both arrays
+        const combinedList = [...movies, ...tvShows];
+    
+        // Sort the merged array based on `sortName`
+        combinedList.sort((a, b) => a.sortName.localeCompare(b.sortName));
+    
+        // Remove the temporary sort key before sending response
+        const finalList = combinedList.map(({ sortName, ...item }) => item);
+    
+        res.json(finalList);
     } catch (error) {
         console.error("Error verifying token or fetching My List:", error);
         res.status(500).json({ error: "Internal Server Error" });

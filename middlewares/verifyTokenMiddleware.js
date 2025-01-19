@@ -1,7 +1,7 @@
 import { admin } from "../config/firebase.js";
 
 const verifyTokenMiddleware = async (req, res, next) => {
-    console.log(req);
+    //console.log(req);
 
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
