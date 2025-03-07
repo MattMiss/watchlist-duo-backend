@@ -4,6 +4,7 @@ import myListRoutes from "./routes/myListRoutes.js";
 import duoPartnerRoutes from "./routes/duoPartnerListRoutes.js";
 import searchRoutes from "./routes/searchRoutes.js";
 import discoverRoutes from "./routes/discoverRoutes.js";
+import healthRoutes from "./routes/healthRouter.js";
 
 const app = express();
 
@@ -27,5 +28,6 @@ app.use("/api", myListRoutes);
 app.use("/api", duoPartnerRoutes);
 app.use("/api", searchRoutes);
 app.use("/api", discoverRoutes);
+app.use("/api", healthRoutes);
 
 export default app;
